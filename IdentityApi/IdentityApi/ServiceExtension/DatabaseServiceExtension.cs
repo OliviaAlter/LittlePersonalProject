@@ -1,0 +1,15 @@
+using IdentityInfrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace Identity.ServiceExtension;
+
+public static class DatabaseServiceExtension
+{
+    public static void AddSqlServerService(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(
+            option => option.UseSqlServer(
+                configuration["TotallyNotConnectionString:Secret"]));
+    }
+}
