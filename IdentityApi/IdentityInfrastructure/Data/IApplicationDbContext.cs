@@ -15,7 +15,7 @@ public interface IApplicationDbContext
 
     // DbContext
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-    Task<bool> CanConnectAsync(CancellationToken cancellationToken);
+    Task<bool> IsDatabaseAvailableAsync(CancellationToken cancellationToken = default);
     Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default);
     DbSet<TEntity> Set<TEntity>() where TEntity : class;
     EntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;

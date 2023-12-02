@@ -1,4 +1,5 @@
 using Identity.Health;
+using IdentityInfrastructure.Data;
 
 namespace Identity.ServiceExtension;
 
@@ -9,7 +10,10 @@ public static class HealthCheckServiceExtension
         services.AddHealthChecks()
             .AddCheck<TokenServiceHealthCheck>(TokenServiceHealthCheck.HealthName);
 
+        //services.AddHealthChecks()
+        //    .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.HealthName);
+
         services.AddHealthChecks()
-            .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.HealthName);
+            .AddDbContextCheck<ApplicationDbContext>();
     }
 }

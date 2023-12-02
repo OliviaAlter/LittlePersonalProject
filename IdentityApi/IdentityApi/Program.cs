@@ -1,6 +1,7 @@
 using Identity.Health;
 using Identity.Middleware;
 using Identity.ServiceExtension;
+using IdentityInfrastructure.Data;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Serilog;
 
@@ -63,7 +64,7 @@ app.MapHealthChecks("/health/token", new HealthCheckOptions
 });
 app.MapHealthChecks("/health/database", new HealthCheckOptions
 {
-    Predicate = check => check.Name == DatabaseHealthCheck.HealthName
+    Predicate = check => check.Name == DatabaseHealthCheck<IApplicationDbContext>.HealthName
 });
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
