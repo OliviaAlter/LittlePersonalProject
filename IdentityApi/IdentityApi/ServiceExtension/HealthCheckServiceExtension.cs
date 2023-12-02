@@ -10,9 +10,6 @@ public static class HealthCheckServiceExtension
         services.AddHealthChecks()
             .AddCheck<TokenServiceHealthCheck>(TokenServiceHealthCheck.HealthName);
 
-        //services.AddHealthChecks()
-        //    .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.HealthName);
-
         services.AddHealthChecks()
             .AddDbContextCheck<ApplicationDbContext>();
     }
