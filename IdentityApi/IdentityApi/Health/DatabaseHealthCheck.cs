@@ -3,7 +3,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace Identity.Health;
 
-public class DatabaseHealthCheck<T>
+public abstract class DatabaseHealthCheck<T>
     (IApplicationDbContext dbContext, ILogger<DatabaseHealthCheck<T>> logger) : IHealthCheck
     where T : IApplicationDbContext
 {

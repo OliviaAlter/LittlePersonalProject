@@ -1,6 +1,6 @@
 namespace IdentityCore.Enum;
 
-public enum Role
+public enum UserRole
 {
     SuperAdmin,
     Admin,

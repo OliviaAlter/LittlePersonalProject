@@ -1,7 +1,9 @@
 using IdentityApplication.Extension;
 using IdentityApplication.Interface.User;
 using IdentityCore.BusinessRuleInterface.EndUser;
+using IdentityCore.Enum;
 using IdentityCore.Model.Users;
+using IdentityCore.RepositoryInterface.Role;
 using IdentityCore.RepositoryInterface.User;
 using IdentityCore.ServiceInterface.Audit;
 using IdentityCore.ServiceInterface.Password;
@@ -9,7 +11,8 @@ using IdentityCore.ServiceInterface.Token;
 
 namespace IdentityApplication.Service.User;
 
-public class EndUserService(IEndUserRepository endUserRepository, IPasswordHashingService passwordService,
+public class EndUserService(IEndUserRepository endUserRepository, IRoleRepository roleRepository,
+    IPasswordHashingService passwordService,
     ITokenService tokenService, IAuditService auditService, IEndUserBusinessRuleService businessRule) : IEndUserService
 {
     public async Task<(string jwtToken, string refreshToken)> LoginAsync(string emailOrUsername, string password)
@@ -40,6 +43,8 @@ public class EndUserService(IEndUserRepository endUserRepository, IPasswordHashi
         {
             var (hash, salt) = await passwordService.CreatePasswordHashAsync(user.Password);
 
+            var role = await roleRepository.GetOrCreateRoleAsync(UserRole.NormalUser);
+
             var registerUser = new EndUser
             {
                 Username = user.Username,
@@ -50,7 +55,8 @@ public class EndUserService(IEndUserRepository endUserRepository, IPasswordHashi
                 PasswordHash = hash,
                 Salt = salt,
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                UpdatedAt = DateTime.UtcNow,
+                RolesId = role
             };
 
             // Continue with adding the user

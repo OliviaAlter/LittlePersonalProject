@@ -3,10 +3,12 @@ using IdentityApplication.Interface.User;
 using IdentityApplication.Service.User;
 using IdentityCore.BusinessRuleInterface.EndUser;
 using IdentityCore.RepositoryInterface.Generic;
+using IdentityCore.RepositoryInterface.Role;
 using IdentityCore.RepositoryInterface.User;
 using IdentityCore.ServiceInterface.Audit;
 using IdentityCore.ServiceInterface.Password;
 using IdentityInfrastructure.Repository.Generic;
+using IdentityInfrastructure.Repository.Role;
 using IdentityInfrastructure.Repository.User;
 using IdentityInfrastructure.Service.Audit;
 using IdentityInfrastructure.Service.HashingPassword;
@@ -20,6 +22,8 @@ public static class InjectServiceExtension
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
         services.AddScoped<IEndUserRepository, EndUserRepository>();
+
+        services.AddScoped<IRoleRepository, RoleRepository>();
 
         services.AddScoped<IEndUserService, EndUserService>();
 

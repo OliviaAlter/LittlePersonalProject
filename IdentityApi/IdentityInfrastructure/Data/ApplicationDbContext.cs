@@ -35,8 +35,23 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
         }
     }
 
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await Database.BeginTransactionAsync();
+    }
+
+    public async Task CommitTransactionAsync(IDbContextTransaction transaction)
+    {
+        await transaction.CommitAsync();
+    }
+
+    public async Task RollbackTransactionAsync(IDbContextTransaction transaction)
+    {
+        await transaction.RollbackAsync();
+    }
+
 
     public virtual DbSet<EndUser> Users { get; set; } = null!;
-    public virtual DbSet<Role> Roles { get; set; } = null!;
+    public virtual DbSet<Roles> Roles { get; set; } = null!;
     public virtual DbSet<AuditRecord> AuditRecords { get; set; } = null!;
 }

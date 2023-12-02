@@ -12,8 +12,8 @@ public class EndUser
     public required string FirstName { get; set; }
     public required string LastName { get; set; }
     public required string PhoneNumber { get; set; }
-    public Guid RoleId { get; set; }
-    public virtual Role Role { get; set; } = null!;
+    public Guid RolesId { get; set; }
+    public virtual Roles Roles { get; set; } = null!;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
     public DateTime? LastLogin { get; set; }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdentityInfrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231202074135_Init_Migration")]
+    [Migration("20231202093604_Init_Migration")]
     partial class Init_Migration
     {
         /// <inheritdoc />
@@ -49,16 +49,17 @@ namespace IdentityInfrastructure.Migrations
                     b.ToTable("AuditRecords");
                 });
 
-            modelBuilder.Entity("IdentityCore.Model.UserRole.Role", b =>
+            modelBuilder.Entity("IdentityCore.Model.UserRole.Roles", b =>
                 {
-                    b.Property<Guid>("RoleId")
+                    b.Property<Guid>("RolesId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("EndUserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("RoleId");
+                    b.HasKey("RolesId");
 
                     b.ToTable("Roles");
                 });
@@ -114,7 +115,7 @@ namespace IdentityInfrastructure.Migrations
                     b.Property<DateTime>("RefreshTokenExpiryTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("RoleId")
+                    b.Property<Guid>("RolesId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<byte[]>("Salt")
@@ -133,23 +134,23 @@ namespace IdentityInfrastructure.Migrations
 
                     b.HasKey("EndUserId");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RolesId");
 
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("IdentityCore.Model.Users.EndUser", b =>
                 {
-                    b.HasOne("IdentityCore.Model.UserRole.Role", "Role")
+                    b.HasOne("IdentityCore.Model.UserRole.Roles", "Roles")
                         .WithMany("Users")
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("RolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Role");
+                    b.Navigation("Roles");
                 });
 
-            modelBuilder.Entity("IdentityCore.Model.UserRole.Role", b =>
+            modelBuilder.Entity("IdentityCore.Model.UserRole.Roles", b =>
                 {
                     b.Navigation("Users");
                 });
