@@ -1,4 +1,5 @@
 using IdentityCore.Model.Audit;
+using IdentityCore.Model.UserRole;
 using IdentityCore.Model.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,5 +17,6 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     }
 
     public virtual DbSet<EndUser> Users { get; set; } = null!;
+    public virtual DbSet<Role> Roles { get; set; } = null!;
     public virtual DbSet<AuditRecord> AuditRecords { get; set; } = null!;
 }

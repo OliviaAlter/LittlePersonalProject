@@ -27,7 +27,7 @@ public class TokenService
         }
         catch
         {
-            return string.Empty;
+            throw new InvalidOperationException("Token generation failed in service.");
         }
     }
 
@@ -85,6 +85,16 @@ public class TokenService
         return user.RefreshToken == refreshToken && user.RefreshTokenExpiryTime > DateTime.UtcNow;
     }
 
+    public async Task<Guid> GetUserIdFromToken(string token)
+    {
+        var userIdClaim = await GetUserIdFromClaims(token);
+
+        if (Guid.TryParse(userIdClaim, out var userId))
+            return await Task.FromResult(userId);
+
+        throw new ArgumentException("Invalid token");
+    }
+
     private async Task<EndUser> GetUserFromToken(string token)
     {
         var userIdClaim = await GetUserIdFromClaims(token);
@@ -102,29 +112,19 @@ public class TokenService
         return user;
     }
 
-    public async Task<Guid> GetUserIdFromToken(string token)
-    {
-        var userIdClaim = await GetUserIdFromClaims(token);
-        
-        if (Guid.TryParse(userIdClaim, out var userId))
-            return await Task.FromResult(userId);
-
-        throw new ArgumentException("Invalid token");
-    }
-    
     private async Task<string> GetUserIdFromClaims(string token)
     {
         var principal = GetPrincipalFromToken(token);
 
         var userIdClaim = principal.Identities.FirstOrDefault()?
             .Claims.FirstOrDefault(c => c.Type == "userid")?.Value;
-        
+
         if (userIdClaim is null)
             throw new ArgumentException("Invalid token");
 
         return await Task.FromResult(userIdClaim);
     }
-    
+
     private string CreateJwtToken(IEnumerable<Claim> claims)
     {
         var tokenHandler = new JwtSecurityTokenHandler();

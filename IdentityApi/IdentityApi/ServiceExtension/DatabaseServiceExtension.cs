@@ -9,7 +9,8 @@ public static class DatabaseServiceExtension
         IConfiguration configuration)
     {
         services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(
-            option => option.UseSqlServer(
-                configuration["TotallyNotConnectionString:Secret"]));
+            option
+                => option.UseSqlServer(configuration["TotallyNotConnectionString:Secret"] ??
+                                       throw new InvalidOperationException("Database setting is null")));
     }
 }
