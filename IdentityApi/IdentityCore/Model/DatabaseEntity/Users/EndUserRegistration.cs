@@ -1,4 +1,4 @@
-namespace IdentityCore.Model.Users;
+namespace IdentityCore.Model.DatabaseEntity.Users;
 
 public class EndUserRegistration
 {

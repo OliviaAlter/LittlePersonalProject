@@ -1,6 +1,6 @@
-using IdentityCore.Model.UserRole;
+using IdentityCore.Model.DatabaseEntity.UserRole;
 
-namespace IdentityCore.Model.Users;
+namespace IdentityCore.Model.DatabaseEntity.Users;
 
 public class EndUser
 {

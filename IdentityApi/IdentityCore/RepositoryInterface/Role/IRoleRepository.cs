@@ -1,5 +1,5 @@
 using IdentityCore.Enum;
-using IdentityCore.Model.UserRole;
+using IdentityCore.Model.DatabaseEntity.UserRole;
 using IdentityCore.RepositoryInterface.Generic;
 
 namespace IdentityCore.RepositoryInterface.Role;

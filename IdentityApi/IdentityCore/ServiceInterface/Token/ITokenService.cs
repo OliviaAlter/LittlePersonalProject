@@ -1,5 +1,5 @@
-using IdentityCore.Model.Token;
-using IdentityCore.Model.Users;
+using IdentityCore.Model.DatabaseEntity.Token;
+using IdentityCore.Model.DatabaseEntity.Users;
 
 namespace IdentityCore.ServiceInterface.Token;
 

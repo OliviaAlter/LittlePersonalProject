@@ -1,6 +1,6 @@
-using IdentityCore.Model.Users;
+using IdentityCore.Model.DatabaseEntity.Users;
 
-namespace IdentityApplication.Interface.User;
+namespace IdentityApplication.ServiceInterface.User;
 
 public interface IEndUserService
 {

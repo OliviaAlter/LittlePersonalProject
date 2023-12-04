@@ -1,5 +1,5 @@
 using Identity.Request.User;
-using IdentityCore.Model.Users;
+using IdentityCore.Model.DatabaseEntity.Users;
 
 namespace Identity.Mapping;
 

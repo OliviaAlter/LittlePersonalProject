@@ -1,5 +1,5 @@
 using FluentValidation;
-using IdentityCore.Model.Users;
+using IdentityCore.Model.DatabaseEntity.Users;
 
 namespace IdentityCore.ModelValidation.EndUser;
 

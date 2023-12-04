@@ -1,6 +1,7 @@
-using IdentityCore.Model.Audit;
-using IdentityCore.Model.UserRole;
-using IdentityCore.Model.Users;
+using IdentityCore.Model.DatabaseEntity.ApiKey;
+using IdentityCore.Model.DatabaseEntity.Audit;
+using IdentityCore.Model.DatabaseEntity.UserRole;
+using IdentityCore.Model.DatabaseEntity.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -52,6 +53,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 
 
     public virtual DbSet<EndUser> Users { get; set; } = null!;
+    public virtual DbSet<UserApiKey> UserApiKeys { get; set; }
     public virtual DbSet<Roles> Roles { get; set; } = null!;
     public virtual DbSet<AuditRecord> AuditRecords { get; set; } = null!;
 }

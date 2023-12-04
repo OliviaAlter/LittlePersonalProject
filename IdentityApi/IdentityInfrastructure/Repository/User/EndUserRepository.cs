@@ -1,4 +1,4 @@
-using IdentityCore.Model.Users;
+using IdentityCore.Model.DatabaseEntity.Users;
 using IdentityCore.RepositoryInterface.User;
 using IdentityInfrastructure.Data;
 using IdentityInfrastructure.DatabaseException;
@@ -17,7 +17,7 @@ public class EndUserRepository(IApplicationDbContext context) :
                 .FirstOrDefaultAsync(x => x.Email == emailOrUsername
                                           || x.Username == emailOrUsername);
 
-        if (endUser == null)
+        if (endUser is null)
             throw new EntityNotFoundException("User not found");
 
         return endUser;

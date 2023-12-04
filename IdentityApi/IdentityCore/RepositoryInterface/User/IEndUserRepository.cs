@@ -1,4 +1,4 @@
-using IdentityCore.Model.Users;
+using IdentityCore.Model.DatabaseEntity.Users;
 using IdentityCore.RepositoryInterface.Generic;
 
 namespace IdentityCore.RepositoryInterface.User;

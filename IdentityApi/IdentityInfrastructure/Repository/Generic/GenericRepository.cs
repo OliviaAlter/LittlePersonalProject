@@ -47,7 +47,7 @@ public class GenericRepository<T>(IApplicationDbContext context) : IGenericRepos
     {
         try
         {
-            if (duplicateCriteria != null && await context.Set<T>().AnyAsync(duplicateCriteria))
+            if (duplicateCriteria is not null && await context.Set<T>().AnyAsync(duplicateCriteria))
                 throw new InvalidOperationException("Duplicate entry detected.");
 
             await context.Set<T>().AddAsync(entity);

@@ -1,5 +1,5 @@
 using Identity.Request.Token;
-using IdentityCore.Model.Token;
+using IdentityCore.Model.DatabaseEntity.Token;
 
 namespace Identity.Mapping;
 

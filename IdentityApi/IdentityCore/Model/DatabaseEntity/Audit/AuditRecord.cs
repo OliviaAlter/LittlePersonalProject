@@ -1,4 +1,4 @@
-namespace IdentityCore.Model.Audit;
+namespace IdentityCore.Model.DatabaseEntity.Audit;
 
 public class AuditRecord
 {

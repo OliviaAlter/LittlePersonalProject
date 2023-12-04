@@ -1,7 +1,7 @@
 ﻿using Identity.Mapping;
 using Identity.Request.Token;
 using Identity.Request.User;
-using IdentityApplication.Interface.User;
+using IdentityApplication.ServiceInterface.User;
 using IdentityCore.ServiceInterface.Token;
 using Microsoft.AspNetCore.Mvc;
 

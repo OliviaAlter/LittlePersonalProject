@@ -8,6 +8,11 @@
 
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="11.8.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Model\DatabaseEntity\"/>
     </ItemGroup>
 
 </Project>

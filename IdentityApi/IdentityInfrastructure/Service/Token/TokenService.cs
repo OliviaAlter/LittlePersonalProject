@@ -2,8 +2,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using IdentityCore.Model.Token;
-using IdentityCore.Model.Users;
+using IdentityCore.Model.DatabaseEntity.Token;
+using IdentityCore.Model.DatabaseEntity.Users;
 using IdentityCore.RepositoryInterface.User;
 using IdentityCore.ServiceInterface.Token;
 using IdentityInfrastructure.Setting;
@@ -14,6 +14,8 @@ namespace IdentityInfrastructure.Service.Token;
 public class TokenService
     (JwtSettings jwtSettings, IEndUserRepository repository) : ITokenService
 {
+    private const int TokenExpiryHours = 8;
+
     public async Task<string> GenerateHealthCheckTokenAsync()
     {
         try
@@ -27,6 +29,7 @@ public class TokenService
         }
         catch
         {
+            // Consider logging the exception here
             throw new InvalidOperationException("Token generation failed in service.");
         }
     }
@@ -35,14 +38,12 @@ public class TokenService
     {
         var claims = GenerateClaimsForUser(user);
 
-        var jwtToken = CreateJwtToken(claims); // Implement this method to generate JWT
+        var jwtToken = CreateJwtToken(claims);
 
-        var refreshToken = GenerateRefreshToken(); // Implement this method to generate a refresh token
+        var refreshToken = GenerateRefreshToken();
 
-        // Save refresh token with user in the database
         user.RefreshToken = refreshToken;
-
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7); // Set expiry, e.g., 7 days
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
         await repository.UpdatePartialAsync(user);
 
@@ -79,7 +80,7 @@ public class TokenService
 
         var user = await repository.FindAsync(x => x.EndUserId == localUserId);
 
-        if (user == null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+        if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
             throw new InvalidOperationException("Invalid client request");
 
         return user.RefreshToken == refreshToken && user.RefreshTokenExpiryTime > DateTime.UtcNow;
@@ -129,10 +130,7 @@ public class TokenService
     {
         var tokenHandler = new JwtSecurityTokenHandler();
 
-        var securityKey = new SymmetricSecurityKey(
-            Encoding.UTF8
-                .GetBytes(jwtSettings.NotTokenKeyForSureSourceTrustMeDude
-                          ?? throw new InvalidOperationException("Jwt secret is missing")));
+        var securityKey = GetSecurityKey(); // Abstracted method to get security key
 
         var credential = new SigningCredentials(
             securityKey, SecurityAlgorithms.HmacSha512Signature);
@@ -140,7 +138,7 @@ public class TokenService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.Add(TimeSpan.FromHours(8)),
+            Expires = DateTime.UtcNow.AddHours(TokenExpiryHours), // Defined as a constant or configuration
             Issuer = jwtSettings.Issuer,
             Audience = string.Join(" ", jwtSettings.Audiences),
             SigningCredentials = credential
@@ -149,6 +147,14 @@ public class TokenService
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
         return tokenHandler.WriteToken(token);
+    }
+
+    private SecurityKey GetSecurityKey()
+    {
+        return new SymmetricSecurityKey(
+            Encoding.UTF8
+                .GetBytes(jwtSettings.NotTokenKeyForSureSourceTrustMeDude
+                          ?? throw new InvalidOperationException("Jwt secret is missing")));
     }
 
     private static string GenerateRefreshToken()
@@ -162,16 +168,16 @@ public class TokenService
     private ClaimsPrincipal GetPrincipalFromToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(jwtSettings.NotTokenKeyForSureSourceTrustMeDude)
-                  ?? throw new InvalidOperationException("Jwt secret is missing");
+
+        var securityKey = GetSecurityKey();
 
         var tokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
+            IssuerSigningKey = securityKey,
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = false,
+            ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
         };
 
@@ -196,8 +202,8 @@ public class TokenService
         return new List<Claim>
         {
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(JwtRegisteredClaimNames.Sub, request.Email),
             new(JwtRegisteredClaimNames.Email, request.Email),
+            new(JwtRegisteredClaimNames.Name, request.Username),
             new("userid", request.EndUserId.ToString())
         };
     }

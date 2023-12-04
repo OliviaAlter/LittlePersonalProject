@@ -1,4 +1,4 @@
-namespace IdentityCore.Model.Token;
+namespace IdentityCore.Model.DatabaseEntity.Token;
 
 public class TokenGeneration
 {

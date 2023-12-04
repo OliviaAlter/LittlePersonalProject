@@ -1,4 +1,4 @@
-using IdentityCore.Model.Audit;
+using IdentityCore.Model.DatabaseEntity.Audit;
 using IdentityCore.ServiceInterface.Audit;
 using IdentityInfrastructure.Data;
 

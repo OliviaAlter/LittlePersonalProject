@@ -1,8 +1,8 @@
 using IdentityApplication.Extension;
-using IdentityApplication.Interface.User;
+using IdentityApplication.ServiceInterface.User;
 using IdentityCore.BusinessRuleInterface.EndUser;
 using IdentityCore.Enum;
-using IdentityCore.Model.Users;
+using IdentityCore.Model.DatabaseEntity.Users;
 using IdentityCore.RepositoryInterface.Role;
 using IdentityCore.RepositoryInterface.User;
 using IdentityCore.ServiceInterface.Audit;
@@ -12,8 +12,8 @@ using IdentityCore.ServiceInterface.Token;
 namespace IdentityApplication.Service.User;
 
 public class EndUserService(IEndUserRepository endUserRepository, IRoleRepository roleRepository,
-    IPasswordHashingService passwordService,
-    ITokenService tokenService, IAuditService auditService, IEndUserBusinessRuleService businessRule) : IEndUserService
+    IPasswordHashingService passwordService, ITokenService tokenService,
+    IAuditService auditService, IEndUserBusinessRuleService businessRule) : IEndUserService
 {
     public async Task<(string jwtToken, string refreshToken)> LoginAsync(string emailOrUsername, string password)
     {

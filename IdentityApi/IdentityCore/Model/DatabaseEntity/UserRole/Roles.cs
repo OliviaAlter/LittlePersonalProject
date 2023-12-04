@@ -1,6 +1,6 @@
-using IdentityCore.Model.Users;
+using IdentityCore.Model.DatabaseEntity.Users;
 
-namespace IdentityCore.Model.UserRole;
+namespace IdentityCore.Model.DatabaseEntity.UserRole;
 
 public class Roles
 {
