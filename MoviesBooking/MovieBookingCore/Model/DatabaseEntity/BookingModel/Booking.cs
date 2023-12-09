@@ -6,9 +6,9 @@ namespace Core.Model.DatabaseEntity.BookingModel;
 
 public class Booking
 {
-    [Key]
-    public Guid BookingId { get; set; }
-    public Guid AccountId { get; set; } 
+    [Key] public Guid BookingId { get; set; }
+
+    public Guid AccountId { get; set; }
     public Guid ShowingId { get; set; }
     public DateTime BookingTime { get; set; }
     public string PaymentMethod { get; set; }

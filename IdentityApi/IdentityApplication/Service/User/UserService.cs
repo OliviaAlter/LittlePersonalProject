@@ -46,7 +46,7 @@ public class UserService(IUserRepository userRepository, IRoleRepository roleRep
 
             var role = await roleRepository.GetOrCreateRoleAsync(UserRoleEnum.NormalUser);
 
-            var registerUser = new Account()
+            var registerUser = new Account
             {
                 Username = user.Username,
                 Email = user.Email,

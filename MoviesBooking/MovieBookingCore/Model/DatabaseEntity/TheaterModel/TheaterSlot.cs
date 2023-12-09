@@ -8,7 +8,9 @@ public class TheaterSlot
     public Guid TheaterId { get; set; }
     public Theater Theater { get; set; }
     public DateTime StartTime { get; set; }
+
     public DateTime EndTime { get; set; }
+
     // Navigation properties
     public ICollection<MovieShowing> Showings { get; set; }
 }

@@ -6,10 +6,12 @@ namespace Core.Model.DatabaseEntity.MovieModel;
 
 public class MovieShowing
 {
-    [Key]
-    public int MovieShowingId { get; set; }
+    [Key] public int MovieShowingId { get; set; }
+
     public Guid MovieId { get; set; }
+
     public Guid TheaterSlotId { get; set; }
+
     // Navigation properties
     public Movie Movie { get; set; }
     public TheaterSlot Slot { get; set; }

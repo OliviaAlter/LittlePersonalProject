@@ -14,4 +14,8 @@
         <Folder Include="ServiceInterface\"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Model\DatabaseEntity\TheaterModel\TheaterSeat.cs" />
+    </ItemGroup>
+
 </Project>
