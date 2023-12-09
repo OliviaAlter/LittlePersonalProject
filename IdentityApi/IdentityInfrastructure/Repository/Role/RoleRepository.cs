@@ -1,15 +1,16 @@
 using IdentityCore.Enum;
-using IdentityCore.Model.DatabaseEntity.UserRole;
+using IdentityCore.Model.DatabaseEntity.RoleModel;
 using IdentityCore.RepositoryInterface.Role;
 using IdentityInfrastructure.Data;
 using IdentityInfrastructure.DatabaseException;
 using IdentityInfrastructure.Repository.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace IdentityInfrastructure.Repository.Role;
 
-public class RoleRepository(IApplicationDbContext context)
-    : GenericRepository<Roles>(context), IRoleRepository
+public class RoleRepository(IAuthIdentityDbContext context, ILogger<RoleRepository> logger)
+    : GenericRepository<AccountRole>(context), IRoleRepository
 {
     public async Task InitializeRolesOnStartUp()
     {
@@ -35,21 +36,21 @@ public class RoleRepository(IApplicationDbContext context)
         }
     }
 
-    public async Task<Guid> GetOrCreateRoleAsync(UserRole roles)
+    public async Task<Guid> GetOrCreateRoleAsync(UserRoleEnum rolesEnum)
     {
-        var roleName = GetRoleNameAsync(roles);
+        var roleName = GetRoleNameAsync(rolesEnum);
 
-        if (roleName is null) throw new ArgumentException($"Invalid role: {roles}", nameof(roles));
+        if (roleName is null) throw new ArgumentException($"Invalid role: {rolesEnum}", nameof(rolesEnum));
 
         var role = await context.Roles
             .FirstOrDefaultAsync(x =>
                 string.Equals(x.RoleName, roleName, StringComparison.OrdinalIgnoreCase));
 
-        if (role is not null) return role.RolesId;
+        if (role is not null) return role.RoleId;
 
-        role = new Roles
+        role = new AccountRole
         {
-            RolesId = Guid.NewGuid(),
+            RoleId = Guid.NewGuid(),
             RoleName = roleName
         };
 
@@ -61,44 +62,43 @@ public class RoleRepository(IApplicationDbContext context)
         }
         catch (Exception ex)
         {
-            // Consider logging the exception
-            // Log.Error(ex, "Failed to create a new role: {RoleName}", roleName);
+            logger.LogError(ex, "Failed to create a new role: {RoleName}", roleName);
             throw new DatabaseOperationException("Error occurred while creating a new role.", ex);
         }
 
-        return role.RolesId;
+        return role.RoleId;
     }
 
-    private static List<Roles> GetRolesToCreate(IEnumerable<Roles> existingRoles)
+    private static List<AccountRole> GetRolesToCreate(IEnumerable<AccountRole> existingRoles)
     {
-        return Enum.GetNames(typeof(UserRole))
+        return Enum.GetNames(typeof(UserRoleEnum))
             .Where(role => !existingRoles.Any(r => r.RoleName.Equals(role, StringComparison.OrdinalIgnoreCase)))
-            .Select(role => new Roles { RolesId = Guid.NewGuid(), RoleName = role })
+            .Select(role => new AccountRole { RoleId = Guid.NewGuid(), RoleName = role })
             .ToList();
     }
 
-    private async Task CreateRoles(IEnumerable<Roles> rolesToCreate)
+    private async Task CreateRoles(IEnumerable<AccountRole> rolesToCreate)
     {
         await context.Roles.AddRangeAsync(rolesToCreate);
     }
 
-    private async Task<List<Roles>> GetExistingRoles()
+    private async Task<List<AccountRole>> GetExistingRoles()
     {
         return await context.Roles.ToListAsync();
     }
 
-    private static string GetRoleNameAsync(UserRole roles)
+    private static string GetRoleNameAsync(UserRoleEnum rolesEnum)
     {
-        var roleName = roles switch
+        var roleName = rolesEnum switch
         {
-            UserRole.Admin => nameof(UserRole.Admin),
-            UserRole.NormalUser => nameof(UserRole.NormalUser),
-            UserRole.Moderator => nameof(UserRole.Moderator),
-            UserRole.SuperAdmin => nameof(UserRole.SuperAdmin),
+            UserRoleEnum.Admin => nameof(UserRoleEnum.Admin),
+            UserRoleEnum.NormalUser => nameof(UserRoleEnum.NormalUser),
+            UserRoleEnum.Moderator => nameof(UserRoleEnum.Moderator),
+            UserRoleEnum.SuperAdmin => nameof(UserRoleEnum.SuperAdmin),
             _ => null
         };
 
-        if (roleName is null) throw new ArgumentException($"Invalid role: {roles}", nameof(roles));
+        if (roleName is null) throw new ArgumentException($"Invalid role: {rolesEnum}", nameof(rolesEnum));
 
         return roleName;
     }

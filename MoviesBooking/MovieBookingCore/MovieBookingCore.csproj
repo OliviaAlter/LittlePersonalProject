@@ -7,4 +7,11 @@
         <RootNamespace>Core</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+        <Folder Include="Enum\"/>
+        <Folder Include="ModelValidation\"/>
+        <Folder Include="RepositoryInterface\"/>
+        <Folder Include="ServiceInterface\"/>
+    </ItemGroup>
+
 </Project>

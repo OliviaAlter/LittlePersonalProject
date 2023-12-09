@@ -7,4 +7,10 @@
         <RootNamespace>Infrastructure</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+        <Folder Include="Repository\"/>
+        <Folder Include="Service\"/>
+        <Folder Include="Setting\"/>
+    </ItemGroup>
+
 </Project>

@@ -2,8 +2,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using IdentityCore.Model.DatabaseEntity.Token;
-using IdentityCore.Model.DatabaseEntity.Users;
+using IdentityCore.Model.DatabaseEntity.AccountModel;
+using IdentityCore.Model.Token;
 using IdentityCore.RepositoryInterface.User;
 using IdentityCore.ServiceInterface.Token;
 using IdentityInfrastructure.Setting;
@@ -12,9 +12,9 @@ using Microsoft.IdentityModel.Tokens;
 namespace IdentityInfrastructure.Service.Token;
 
 public class TokenService
-    (JwtSettings jwtSettings, IEndUserRepository repository) : ITokenService
+    (JwtSettings jwtSettings, IUserRepository repository) : ITokenService
 {
-    private const int TokenExpiryHours = 8;
+    private const int TokenExpiryHours = 12;
 
     public async Task<string> GenerateHealthCheckTokenAsync()
     {
@@ -34,18 +34,18 @@ public class TokenService
         }
     }
 
-    public async Task<(string jwtToken, string refreshToken)> GenerateTokenForUser(EndUser user)
+    public async Task<(string jwtToken, string refreshToken)> GenerateTokenForUser(Account account)
     {
-        var claims = GenerateClaimsForUser(user);
+        var claims = GenerateClaimsForUser(account);
 
         var jwtToken = CreateJwtToken(claims);
 
         var refreshToken = GenerateRefreshToken();
 
-        user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+        account.RefreshToken = refreshToken;
+        account.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
-        await repository.UpdatePartialAsync(user);
+        await repository.UpdatePartialAsync(account);
 
         return (jwtToken, refreshToken);
     }
@@ -55,7 +55,7 @@ public class TokenService
         var user = await GetUserFromToken(request.Token);
 
         // Validate the refresh token
-        if (!await IsRefreshTokenValid(request.RefreshToken, user.EndUserId))
+        if (!await IsRefreshTokenValid(request.RefreshToken, user.UserId))
             throw new InvalidOperationException("Invalid refresh token.");
 
         var claims = GenerateClaimsForUser(user);
@@ -74,11 +74,11 @@ public class TokenService
         return (newJwtToken, newRefreshToken); // Return the new JWT token
     }
 
-    public async Task<bool> IsRefreshTokenValid(string refreshToken, Guid userId)
+    public async Task<bool> IsRefreshTokenValid(string refreshToken, Guid accountId)
     {
-        var localUserId = userId;
+        var localUserId = accountId;
 
-        var user = await repository.FindAsync(x => x.EndUserId == localUserId);
+        var user = await repository.FindAsync(x => x.UserId == localUserId);
 
         if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
             throw new InvalidOperationException("Invalid client request");
@@ -90,22 +90,22 @@ public class TokenService
     {
         var userIdClaim = await GetUserIdFromClaims(token);
 
-        if (Guid.TryParse(userIdClaim, out var userId))
-            return await Task.FromResult(userId);
+        if (Guid.TryParse(userIdClaim, out var accountId))
+            return await Task.FromResult(accountId);
 
         throw new ArgumentException("Invalid token");
     }
 
-    private async Task<EndUser> GetUserFromToken(string token)
+    private async Task<Account> GetUserFromToken(string token)
     {
         var userIdClaim = await GetUserIdFromClaims(token);
 
-        if (!Guid.TryParse(userIdClaim, out var userId))
+        if (!Guid.TryParse(userIdClaim, out var accountId))
             throw new InvalidOperationException("Invalid token");
 
-        var userToFind = userId;
+        var userToFind = accountId;
 
-        var user = await repository.FindAsync(x => x.EndUserId == userToFind);
+        var user = await repository.FindAsync(x => x.UserId == userToFind);
 
         if (user is null)
             throw new InvalidOperationException("Invalid token");
@@ -149,7 +149,7 @@ public class TokenService
         return tokenHandler.WriteToken(token);
     }
 
-    private SecurityKey GetSecurityKey()
+    private SymmetricSecurityKey GetSecurityKey()
     {
         return new SymmetricSecurityKey(
             Encoding.UTF8
@@ -197,14 +197,14 @@ public class TokenService
         }
     }
 
-    private static List<Claim> GenerateClaimsForUser(EndUser request)
+    private static List<Claim> GenerateClaimsForUser(Account request)
     {
         return new List<Claim>
         {
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.Email, request.Email),
             new(JwtRegisteredClaimNames.Name, request.Username),
-            new("userid", request.EndUserId.ToString())
+            new("userid", request.UserId.ToString())
         };
     }
 }

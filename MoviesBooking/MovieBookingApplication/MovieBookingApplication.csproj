@@ -7,4 +7,9 @@
         <RootNamespace>Application</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+        <Folder Include="ServiceInterface\"/>
+        <Folder Include="Service\"/>
+    </ItemGroup>
+
 </Project>

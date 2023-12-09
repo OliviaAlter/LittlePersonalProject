@@ -1,10 +1,10 @@
 using IdentityCore.BusinessRuleInterface.EndUser;
-using IdentityCore.Model.DatabaseEntity.Users;
+using IdentityCore.Model.DatabaseEntity.AccountModel;
 using IdentityCore.RepositoryInterface.Generic;
 
 namespace IdentityApplication.BusinessRule.User;
 
-public class EndUserBusinessRuleService(IGenericRepository<EndUser> userRepository) : IEndUserBusinessRuleService
+public class EndUserBusinessRuleService(IGenericRepository<Account> userRepository) : IEndUserBusinessRuleService
 {
     public async Task<bool> IsUsernameUniqueAsync(string username)
     {

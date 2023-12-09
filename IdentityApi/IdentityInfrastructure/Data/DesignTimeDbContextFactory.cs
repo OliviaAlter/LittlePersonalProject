@@ -4,11 +4,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace IdentityInfrastructure.Data;
 
-public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AuthIdentityDbContext>
 {
-    public ApplicationDbContext CreateDbContext(string[] args)
+    public AuthIdentityDbContext CreateDbContext(string[] args)
     {
-        var apiProjectPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "../IdentityApi"));
+        var apiProjectPath = Path.GetFullPath(
+            Path.Combine(Directory.GetCurrentDirectory(),
+                "../IdentityApi"));
 
         // Build configuration
         var configuration = new ConfigurationBuilder()
@@ -16,11 +18,11 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<Applicatio
             .AddJsonFile("appsettings.json")
             .Build();
 
-        var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<AuthIdentityDbContext>();
 
         optionsBuilder.UseSqlServer(configuration["TotallyNotConnectionString:Secret"] ??
                                     throw new InvalidOperationException("Database setting is null"));
 
-        return new ApplicationDbContext(optionsBuilder.Options);
+        return new AuthIdentityDbContext(optionsBuilder.Options);
     }
 }

@@ -4,8 +4,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 namespace Identity.Health;
 
 public abstract class DatabaseHealthCheck<T>
-    (IApplicationDbContext dbContext, ILogger<DatabaseHealthCheck<T>> logger) : IHealthCheck
-    where T : IApplicationDbContext
+    (IAuthIdentityDbContext dbContext, ILogger<DatabaseHealthCheck<T>> logger) : IHealthCheck
+    where T : IAuthIdentityDbContext
 {
     public const string HealthName = "Database_Health_Check";
 

@@ -11,6 +11,6 @@ public static class HealthCheckServiceExtension
             .AddCheck<TokenServiceHealthCheck>(TokenServiceHealthCheck.HealthName);
 
         services.AddHealthChecks()
-            .AddDbContextCheck<ApplicationDbContext>();
+            .AddDbContextCheck<AuthIdentityDbContext>();
     }
 }

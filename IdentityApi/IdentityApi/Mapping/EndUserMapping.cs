@@ -1,13 +1,13 @@
 using Identity.Request.User;
-using IdentityCore.Model.DatabaseEntity.Users;
+using IdentityCore.ModelValidation.UserModel;
 
 namespace Identity.Mapping;
 
 public static class EndUserMapping
 {
-    public static EndUserRegistration MapToUser(this EndUserRegisterRequest request)
+    public static UserRegistration MapToUser(this EndUserRegisterRequest request)
     {
-        return new EndUserRegistration
+        return new UserRegistration
         {
             Username = request.Username,
             Password = request.Password,

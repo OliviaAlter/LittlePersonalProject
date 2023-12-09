@@ -1,10 +1,10 @@
-using IdentityCore.Model.DatabaseEntity.Audit;
+using IdentityCore.Model.DatabaseEntity.AuditModel;
 using IdentityCore.ServiceInterface.Audit;
 using IdentityInfrastructure.Data;
 
 namespace IdentityInfrastructure.Service.Audit;
 
-public class AuditService(IApplicationDbContext dbContext) : IAuditService
+public class AuditService(IAuthIdentityDbContext dbContext) : IAuditService
 {
     public async Task LogToDatabaseAsync(string action, string details)
     {

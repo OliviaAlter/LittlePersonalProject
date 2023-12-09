@@ -15,16 +15,16 @@ public class TokenValidationMiddleware(RequestDelegate next)
             if (!string.IsNullOrEmpty(token))
             {
                 // Extract user information or token id from the token
-                var userId = await tokenService.GetUserIdFromToken(token);
+                var accountId = await tokenService.GetUserIdFromToken(token);
 
-                if (userId == Guid.Empty)
+                if (accountId == Guid.Empty)
                 {
                     // Handle invalid token: return an error or redirect
                     context.Response.StatusCode = 401; // Unauthorized
                     return;
                 }
 
-                var isValid = await tokenService.IsRefreshTokenValid(token, userId);
+                var isValid = await tokenService.IsRefreshTokenValid(token, accountId);
 
                 if (!isValid)
                 {
@@ -32,13 +32,9 @@ public class TokenValidationMiddleware(RequestDelegate next)
                     context.Response.StatusCode = 401; // Unauthorized
                     return;
                 }
-
-                // Optionally add user information to HttpContext for downstream access
-                //context.Items["User"] = user;
             }
         }
 
-        // Call the next delegate/middleware in the pipeline
         await next(context);
     }
 }

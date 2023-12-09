@@ -59,7 +59,6 @@ builder.Services.AddCors(o =>
 
 var app = builder.Build();
 
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -79,14 +78,14 @@ app.MapHealthChecks("/health/token", new HealthCheckOptions
 });
 app.MapHealthChecks("/health/database", new HealthCheckOptions
 {
-    Predicate = check => check.Name == DatabaseHealthCheck<IApplicationDbContext>.HealthName
+    Predicate = check => check.Name == DatabaseHealthCheck<IAuthIdentityDbContext>.HealthName
 });
+
+app.UseMiddleware<TokenValidationMiddleware>();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseMiddleware<ValidationMappingMiddleware>();
-
-app.UseMiddleware<TokenValidationMiddleware>();
 
 app.MapControllers();
 

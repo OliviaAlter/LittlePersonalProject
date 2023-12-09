@@ -44,7 +44,7 @@ public class ApiKeyAuthenticationHandler(
                 new Claim(ClaimTypes.PrimarySid, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim("userid", user.EndUserId.ToString())
+                new Claim("userid", user.AccountId.ToString())
             };
 
             var identity = new ClaimsIdentity(claims, Scheme.Name);

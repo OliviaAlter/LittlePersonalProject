@@ -4,9 +4,9 @@ namespace IdentityApplication.ServiceInterface.ApiKey;
 
 public interface IApiKeyService
 {
-    Task<string> GetApiKeyAsync(Guid endUserId);
-    Task<string> CreateApiKeyAsync(Guid endUserId);
-    Task<bool> IsApiKeyValidAsync(string apiKeyId, Guid? endUserId = null);
+    Task<string> GetApiKeyAsync(Guid accountId);
+    Task<string> CreateApiKeyAsync(Guid accountId);
+    Task<bool> IsApiKeyValidAsync(string apiKeyId, Guid? accountId = null);
     Task<UserApiKeyResponse?> GetUserFromApiKeyAsync(string providedApiKey);
-    Task<bool> RevokeApiKeyAsync(Guid endUserId);
+    Task<bool> RevokeApiKeyAsync(Guid accountId);
 }

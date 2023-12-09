@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IdentityInfrastructure.Repository.Generic;
 
-public class GenericRepository<T>(IApplicationDbContext context) : IGenericRepository<T>
+public class GenericRepository<T>(IAuthIdentityDbContext context) : IGenericRepository<T>
     where T : class
 {
     public async Task<IEnumerable<T>> FindAllAsync(Expression<Func<T, bool>> predicate)

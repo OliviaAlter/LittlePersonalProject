@@ -9,6 +9,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="11.8.1"/>
+        <PackageReference Include="Hangfire.Core" Version="1.8.6"/>
+        <PackageReference Include="Hangfire.SqlServer" Version="1.8.6"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
@@ -17,6 +20,12 @@
         <Content Include="..\.dockerignore">
             <Link>.dockerignore</Link>
         </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Controller\"/>
+        <Folder Include="Request\"/>
+        <Folder Include="ServiceExtension\"/>
     </ItemGroup>
 
 </Project>

@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="11.8.1"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
     </ItemGroup>
@@ -22,7 +23,6 @@
     <ItemGroup>
         <Folder Include="Controller\"/>
         <Folder Include="Request\"/>
-        <Folder Include="Response\"/>
     </ItemGroup>
 
 </Project>

@@ -11,9 +11,9 @@ public class ApiKeyController(IApiKeyService apiKeyService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetApiKey()
     {
-        var endUserId = GetUserId();
+        var accountId = GetUserId();
 
-        var apiKey = await apiKeyService.GetApiKeyAsync(endUserId.Value);
+        var apiKey = await apiKeyService.GetApiKeyAsync(accountId.Value);
 
         return Ok(new
         {
@@ -24,9 +24,9 @@ public class ApiKeyController(IApiKeyService apiKeyService) : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> CreateApiKey()
     {
-        var endUserId = GetUserId();
+        var accountId = GetUserId();
 
-        var apiKey = await apiKeyService.CreateApiKeyAsync(endUserId.Value);
+        var apiKey = await apiKeyService.CreateApiKeyAsync(accountId.Value);
 
         if (string.IsNullOrEmpty(apiKey))
             throw new BadHttpRequestException("API Key creation failed.");
@@ -40,9 +40,9 @@ public class ApiKeyController(IApiKeyService apiKeyService) : ControllerBase
     [HttpPost("revoke")]
     public async Task<IActionResult> RevokeApiKey()
     {
-        var endUserId = GetUserId();
+        var accountId = GetUserId();
 
-        var result = await apiKeyService.RevokeApiKeyAsync(endUserId.Value);
+        var result = await apiKeyService.RevokeApiKeyAsync(accountId.Value);
 
         if (!result)
             throw new BadHttpRequestException("API Key revocation failed.");
@@ -52,11 +52,11 @@ public class ApiKeyController(IApiKeyService apiKeyService) : ControllerBase
 
     private Guid? GetUserId()
     {
-        var userId = HttpContext.GetUserId();
+        var accountId = HttpContext.GetUserId();
 
-        if (userId is null)
+        if (accountId is null)
             throw new BadHttpRequestException("User not found.");
 
-        return userId;
+        return accountId;
     }
 }

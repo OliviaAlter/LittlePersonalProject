@@ -25,13 +25,13 @@ public static class InjectServiceExtension
     {
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
-        services.AddScoped<IEndUserRepository, EndUserRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
 
         services.AddScoped<IRoleRepository, RoleRepository>();
 
         services.AddScoped<IApiKeyRepository, ApiKeyRepository>();
 
-        services.AddScoped<IEndUserService, EndUserService>();
+        services.AddScoped<IEndUserService, UserService>();
 
         services.AddScoped<IApiKeyService, ApiKeyService>();
 
