@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using Core.Model.DatabaseEntity.BookingModel;
+using MovieBookingCore.Model.DatabaseEntity.BookingModel;
 
-namespace Core.Model.DatabaseEntity.SeatModel;
+namespace MovieBookingCore.Model.DatabaseEntity.SeatModel;
 
 public class BookedSeat
 {

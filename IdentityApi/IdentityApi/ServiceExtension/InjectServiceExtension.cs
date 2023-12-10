@@ -31,9 +31,9 @@ public static class InjectServiceExtension
 
         services.AddScoped<IApiKeyRepository, ApiKeyRepository>();
 
-        services.AddScoped<IEndUserService, UserService>();
-
         services.AddScoped<IApiKeyService, ApiKeyService>();
+
+        services.AddScoped<IEndUserService, UserService>();
 
         services.AddScoped<IAuditService, AuditService>();
 

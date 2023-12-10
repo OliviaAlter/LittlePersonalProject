@@ -1,4 +1,4 @@
-namespace Core.Model.DatabaseEntity.MovieModel;
+namespace MovieBookingCore.Model.DatabaseEntity.MovieModel;
 
 public class Movie
 {

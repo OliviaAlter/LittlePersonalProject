@@ -1,4 +1,4 @@
-namespace Core.RepositoryException;
+namespace MovieBookingCore.RepositoryException;
 
 // ApiKey
 public class ApiKeyGenerationException : Exception

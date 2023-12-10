@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 
-namespace IdentityCore.Options.ApiKey;
+namespace MovieBookingCore.Options.ApiKey;
 
 public class ApiKeyAuthenticationOptions : AuthenticationSchemeOptions
 {

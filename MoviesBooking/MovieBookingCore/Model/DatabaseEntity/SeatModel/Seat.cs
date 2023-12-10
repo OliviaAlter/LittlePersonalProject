@@ -1,17 +1,16 @@
 using System.ComponentModel.DataAnnotations;
-using Core.Model.DatabaseEntity.TheaterModel;
+using MovieBookingCore.Model.DatabaseEntity.TheaterModel;
 
-namespace Core.Model.DatabaseEntity.SeatModel;
+namespace MovieBookingCore.Model.DatabaseEntity.SeatModel;
 
 public class Seat
 {
     [Key] public Guid SeatId { get; set; }
-
-    public Guid TheaterId { get; set; }
+    public Guid TheaterHallId { get; set; }
     public required string SeatNumber { get; set; }
 
-    public bool IsAvailable { get; set; }
+    public bool IsReserved { get; set; }
 
     // Navigation property
-    public Theater Theater { get; set; }
+    public TheaterHall Hall { get; set; }
 }

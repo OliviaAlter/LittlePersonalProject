@@ -1,13 +1,13 @@
 using System.ComponentModel.DataAnnotations;
-using Core.Model.DatabaseEntity.SeatModel;
 
-namespace Core.Model.DatabaseEntity.TheaterModel;
+namespace MovieBookingCore.Model.DatabaseEntity.TheaterModel;
 
 public class Theater
 {
     [Key] public Guid TheaterId { get; set; }
 
     public required string TheaterName { get; set; }
-    public ICollection<TheaterSlot> TheaterSlots { get; set; }
-    public ICollection<Seat> Seats { get; set; }
+
+    // Navigation properties
+    public ICollection<TheaterHall> Halls { get; set; }
 }

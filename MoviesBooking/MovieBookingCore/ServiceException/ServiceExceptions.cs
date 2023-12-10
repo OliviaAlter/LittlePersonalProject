@@ -1,4 +1,4 @@
-namespace Core.ServiceException;
+namespace MovieBookingCore.ServiceException;
 
 public class ServiceExceptions
 {

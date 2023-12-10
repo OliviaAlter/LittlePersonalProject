@@ -16,9 +16,9 @@ public class ApiKeyService(IApiKeyRepository apiKeyRepository) : IApiKeyService
         return await apiKeyRepository.CreateApiKeyAsync(accountId);
     }
 
-    public async Task<bool> IsApiKeyValidAsync(string apiKeyId)
+    public async Task<bool> IsApiKeyValidAsync(string apiKeyId, Guid? accountId)
     {
-        return await apiKeyRepository.IsApiKeyValidAsync(apiKeyId);
+        return await apiKeyRepository.IsApiKeyValidAsync(apiKeyId, accountId);
     }
 
     public async Task<UserApiKeyResponse?> GetUserFromApiKeyAsync(string providedApiKey)

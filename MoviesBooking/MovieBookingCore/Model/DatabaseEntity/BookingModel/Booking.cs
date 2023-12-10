@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using Core.Model.DatabaseEntity.MovieModel;
-using Core.Model.DatabaseEntity.SeatModel;
+using MovieBookingCore.Model.DatabaseEntity.MovieModel;
+using MovieBookingCore.Model.DatabaseEntity.SeatModel;
 
-namespace Core.Model.DatabaseEntity.BookingModel;
+namespace MovieBookingCore.Model.DatabaseEntity.BookingModel;
 
 public class Booking
 {

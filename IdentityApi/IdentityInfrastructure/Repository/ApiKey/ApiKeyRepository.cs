@@ -21,7 +21,7 @@ public class ApiKeyRepository
         if (accountId == Guid.Empty)
             throw new ArgumentException("Invalid user ID.", nameof(accountId));
 
-        var apiKey = await FindApiKeyAsync(accountId);
+        var apiKey = await FindApiKeyBasedOnUserAsync(accountId);
 
         switch (apiKey)
         {
@@ -49,7 +49,7 @@ public class ApiKeyRepository
         await using var transaction = await context.BeginTransactionAsync();
         try
         {
-            var existingApiKey = await FindApiKeyAsync(accountId);
+            var existingApiKey = await FindApiKeyBasedOnUserAsync(accountId);
 
             if (existingApiKey is null || existingApiKey.IsRevoked || existingApiKey.ExpiresAt < DateTime.UtcNow)
             {
@@ -92,7 +92,7 @@ public class ApiKeyRepository
 
         try
         {
-            var apiKey = await FindApiKeyAsync(accountId);
+            var apiKey = await FindApiKeyBasedOnUserAsync(accountId);
 
             if (apiKey is null)
             {
@@ -101,7 +101,7 @@ public class ApiKeyRepository
             }
 
             apiKey.IsRevoked = true;
-            apiKey.ExpiresAt = DateTime.UtcNow; // Consider if this is necessary
+            apiKey.ExpiresAt = DateTime.UtcNow;
 
             context.UserApiKeys.Update(apiKey);
             await context.SaveChangesAsync();
@@ -138,19 +138,19 @@ public class ApiKeyRepository
         return null;
     }
 
-    public async Task<bool> IsApiKeyValidAsync(string apiKeyId, Guid? accountId = null)
+    public async Task<bool> IsApiKeyValidAsync(string apiKeyId)
     {
         if (string.IsNullOrEmpty(apiKeyId))
-            throw new ArgumentException("API key ID must be provided.", nameof(apiKeyId));
+            throw new ArgumentException("API key must be provided.", nameof(apiKeyId));
 
         return await context.UserApiKeys
-            .AnyAsync(x => x.UniqueApiKey == apiKeyId
-                           && (!accountId.HasValue || x.AccountId == accountId.Value)
-                           && !x.IsRevoked
-                           && x.ExpiresAt > DateTime.UtcNow);
+            .AnyAsync(x =>
+                x.UniqueApiKey == apiKeyId
+                && !x.IsRevoked 
+                && x.ExpiresAt > DateTime.UtcNow);
     }
 
-    private async Task<UserApiKey?> FindApiKeyAsync(Guid accountId)
+    private async Task<UserApiKey?> FindApiKeyBasedOnUserAsync(Guid accountId)
     {
         return await context.UserApiKeys
             .FirstOrDefaultAsync(x

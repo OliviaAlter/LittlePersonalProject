@@ -1,11 +1,11 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
-using IdentityApplication.ServiceInterface.ApiKey;
-using IdentityCore.Options.ApiKey;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MovieBookingCore.Options.ApiKey;
 
-namespace Identity.Handler;
+namespace Application.Handler;
 
 public class ApiKeyAuthenticationHandler(
         IOptionsMonitor<ApiKeyAuthenticationOptions> options,

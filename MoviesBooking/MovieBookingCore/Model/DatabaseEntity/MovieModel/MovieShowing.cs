@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using Core.Model.DatabaseEntity.BookingModel;
-using Core.Model.DatabaseEntity.TheaterModel;
+using MovieBookingCore.Model.DatabaseEntity.BookingModel;
+using MovieBookingCore.Model.DatabaseEntity.TheaterModel;
 
-namespace Core.Model.DatabaseEntity.MovieModel;
+namespace MovieBookingCore.Model.DatabaseEntity.MovieModel;
 
 public class MovieShowing
 {
@@ -14,6 +14,6 @@ public class MovieShowing
 
     // Navigation properties
     public Movie Movie { get; set; }
-    public TheaterSlot Slot { get; set; }
+    public TheaterHall Hall { get; set; }
     public ICollection<Booking> Bookings { get; set; }
 }
