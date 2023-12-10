@@ -146,7 +146,7 @@ public class ApiKeyRepository
         return await context.UserApiKeys
             .AnyAsync(x =>
                 x.UniqueApiKey == apiKeyId
-                && !x.IsRevoked 
+                && !x.IsRevoked
                 && x.ExpiresAt > DateTime.UtcNow);
     }
 

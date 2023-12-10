@@ -30,17 +30,14 @@ public class ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeyAuthenticationOpt
             return AuthenticateResult.Fail("API Key is empty.");
 
         var isValidApiKey = await apiKeyService.ValidateApiKeyAsync(providedApiKey);
-        
-        if (!isValidApiKey)
-        {
-            return AuthenticateResult.Fail("Invalid API Key provided.");
-        }
-        
+
+        if (!isValidApiKey) return AuthenticateResult.Fail("Invalid API Key provided.");
+
         var user = await apiKeyService.GetUserFromApiKeyAsync(providedApiKey);
 
         if (user is null)
             return AuthenticateResult.Fail("No user associated with this API key.");
-       
+
         var claims = new[]
         {
             new Claim(ClaimTypes.PrimarySid, Guid.NewGuid().ToString()),
@@ -55,5 +52,4 @@ public class ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeyAuthenticationOpt
 
         return AuthenticateResult.Success(ticket);
     }
-    
 }

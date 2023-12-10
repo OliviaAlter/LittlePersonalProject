@@ -18,19 +18,15 @@ public class ApiKeyService(HttpClient httpClient) : IApiKeyService
             {
                 var content = await response.Content.ReadAsStringAsync();
                 var result = JsonConvert.DeserializeObject<ApiKeyValidationResult>(content);
-                
+
                 if (result is null)
-                {
                     throw new Exception("Unable to deserialize response from the authentication service.");
-                }
-                
+
                 return result.IsValid;
             }
 
             if (response.StatusCode == HttpStatusCode.BadRequest)
-            {
                 throw new ArgumentException("API key is invalid or missing.");
-            }
 
             throw new Exception("Unexpected response from the authentication service.");
         }

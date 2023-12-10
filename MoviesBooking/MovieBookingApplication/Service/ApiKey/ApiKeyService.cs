@@ -1,8 +1,4 @@
-using IdentityApplication.ServiceInterface.ApiKey;
-using IdentityCore.Model.ObjectResponse;
-using IdentityCore.RepositoryInterface.ApiKey;
-
-namespace IdentityApplication.Service.ApiKey;
+namespace Application.Service.ApiKey;
 
 public class ApiKeyService(IApiKeyRepository apiKeyRepository) : IApiKeyService
 {
