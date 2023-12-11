@@ -1,8 +1,8 @@
+using Common.Exception.DatabaseException.CommonDatabaseException;
 using IdentityCore.Enum;
 using IdentityCore.Model.DatabaseEntity.RoleModel;
 using IdentityCore.RepositoryInterface.Role;
 using IdentityInfrastructure.Data;
-using IdentityInfrastructure.DatabaseException;
 using IdentityInfrastructure.Repository.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

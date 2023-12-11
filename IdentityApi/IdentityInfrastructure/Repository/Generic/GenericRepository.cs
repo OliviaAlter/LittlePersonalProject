@@ -1,7 +1,8 @@
 using System.Linq.Expressions;
+using Common.Exception.DatabaseException.CommonDatabaseException;
+using Common.Exception.RepositoryException.CommonRepositoryException;
 using IdentityCore.RepositoryInterface.Generic;
 using IdentityInfrastructure.Data;
-using IdentityInfrastructure.DatabaseException;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 

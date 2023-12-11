@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\SharedCommon\Common.Exception\Common.Exception.csproj"/>
         <ProjectReference Include="..\IdentityApplication\IdentityApplication.csproj"/>
         <ProjectReference Include="..\IdentityInfrastructure\IdentityInfrastructure.csproj"/>
     </ItemGroup>

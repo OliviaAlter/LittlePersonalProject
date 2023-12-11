@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
+using Common.Exception.RepositoryException.ApiKeyRepositoryException;
 using IdentityCore.Model.DatabaseEntity.ApiKeyModel;
 using IdentityCore.Model.ObjectResponse;
-using IdentityCore.RepositoryException;
 using IdentityCore.RepositoryInterface.ApiKey;
 using IdentityInfrastructure.Data;
 using IdentityInfrastructure.Repository.Generic;

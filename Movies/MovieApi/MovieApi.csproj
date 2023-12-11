@@ -25,4 +25,8 @@
         <Folder Include="Request\"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\..\SharedCommon\Common.Exception\Common.Exception.csproj"/>
+    </ItemGroup>
+
 </Project>

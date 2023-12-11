@@ -36,6 +36,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityInfrastructure", "I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityTest", "IdentityApi\IdentityTest\IdentityTest.csproj", "{F5BDD66C-4C1B-4CB8-BF51-0396F824741C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedCommon", "SharedCommon", "{F33E7992-3315-4528-9336-FF4792E9A48A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Exception", "SharedCommon\Common.Exception\Common.Exception.csproj", "{B9674F2B-8453-4B47-83D2-13CE4B4D795C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +61,7 @@ Global
 		{D48646B1-95F0-4D80-8AF2-2FF562CC3563} = {9831C6BA-08E0-4871-8B9D-617609F81D8B}
 		{B64D0941-9BF8-416B-9A9B-98AD33FCB012} = {9831C6BA-08E0-4871-8B9D-617609F81D8B}
 		{F5BDD66C-4C1B-4CB8-BF51-0396F824741C} = {9831C6BA-08E0-4871-8B9D-617609F81D8B}
+		{B9674F2B-8453-4B47-83D2-13CE4B4D795C} = {F33E7992-3315-4528-9336-FF4792E9A48A}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BDAA8D02-4D20-4F93-AAA6-1ECFA39162E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -119,5 +124,9 @@ Global
 		{F5BDD66C-4C1B-4CB8-BF51-0396F824741C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5BDD66C-4C1B-4CB8-BF51-0396F824741C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5BDD66C-4C1B-4CB8-BF51-0396F824741C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9674F2B-8453-4B47-83D2-13CE4B4D795C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9674F2B-8453-4B47-83D2-13CE4B4D795C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9674F2B-8453-4B47-83D2-13CE4B4D795C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9674F2B-8453-4B47-83D2-13CE4B4D795C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

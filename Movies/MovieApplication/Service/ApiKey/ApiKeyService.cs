@@ -1,12 +1,18 @@
 using System.Net;
 using System.Net.Http.Json;
+using Common.Exception.HttpException;
+using Microsoft.Extensions.Logging;
+using MovieApplication.ReturnModel.UserApiKey;
 using MovieApplication.ServiceInterface.ApiKey;
 using MovieCore.ValidationResult.ApiKeyValidationResult;
+using MovieInfrastructure.Setting;
 using Newtonsoft.Json;
+using UnauthorizedAccessException = MovieApi.CustomException.UnauthorizedAccessException;
 
 namespace MovieApplication.Service.ApiKey;
 
-public class ApiKeyService(HttpClient httpClient) : IApiKeyService
+public class ApiKeyService
+    (HttpClient httpClient, ApiKeyUrlSetting authUrl, ILogger<ApiKeyService> logger) : IApiKeyService
 {
     public async Task<bool> ValidateApiKeyAsync(string apiKey)
     {
@@ -25,8 +31,25 @@ public class ApiKeyService(HttpClient httpClient) : IApiKeyService
                 return result.IsValid;
             }
 
-            if (response.StatusCode == HttpStatusCode.BadRequest)
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.BadRequest:
+                    logger.LogWarning("API key is invalid or missing");
+                    throw new BadRequestException("API key is invalid or missing.");
+                case HttpStatusCode.Unauthorized:
+                    logger.LogWarning("API key is invalid thus unauthorized");
+                    throw new UnauthorizedException("API key is invalid thus unauthorized.");
+            }
+
+            if (response.StatusCode
+                is HttpStatusCode.BadRequest
+                or HttpStatusCode.Unauthorized
+                or HttpStatusCode.Forbidden)
+            {
+                logger.LogWarning("API key is invalid or missing");
                 throw new ArgumentException("API key is invalid or missing.");
+            }
+
 
             throw new Exception("Unexpected response from the authentication service.");
         }
@@ -34,5 +57,14 @@ public class ApiKeyService(HttpClient httpClient) : IApiKeyService
         {
             throw new Exception("Unable to connect to the authentication service.");
         }
+    }
+
+    public async Task<UserApiKey?> GetUserFromApiKeyAsync(string apiKey)
+    {
+        var response = await httpClient.GetAsync($"{authUrl}/user-details?apiKey={apiKey}");
+        if (response.IsSuccessStatusCode) return await response.Content.ReadAsAsync<UserApiKey>();
+
+        // Handle errors or not found cases
+        return null;
     }
 }

@@ -1,7 +1,7 @@
+using Common.Exception.DatabaseException.CommonDatabaseException;
 using IdentityCore.Model.DatabaseEntity.AccountModel;
 using IdentityCore.RepositoryInterface.User;
 using IdentityInfrastructure.Data;
-using IdentityInfrastructure.DatabaseException;
 using IdentityInfrastructure.Repository.Generic;
 using Microsoft.EntityFrameworkCore;
 

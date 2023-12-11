@@ -1,6 +1,6 @@
 using System.Net;
+using Common.Exception.HttpException;
 using Microsoft.AspNetCore.Mvc;
-using MovieApi.CustomException;
 
 namespace MovieApi.Middleware;
 
@@ -26,24 +26,52 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         // Map specific exceptions to HTTP status codes
         switch (exception)
         {
-            case ArgumentException:
+            case BadRequestException:
                 statusCode = HttpStatusCode.BadRequest;
                 message = exception.Message;
                 break;
-            case HttpException.NotFoundException:
-                statusCode = HttpStatusCode.NotFound;
+            case ConflictException:
+                statusCode = HttpStatusCode.Conflict;
                 message = exception.Message;
                 break;
-            case UnauthorizedAccessException:
-                statusCode = HttpStatusCode.Unauthorized;
-                message = "Access is denied for this resource.";
-                break;
-            case HttpException.ForbiddenAccessException:
+            case ForbiddenAccessException:
                 statusCode = HttpStatusCode.Forbidden;
                 message = "You do not have permission to perform this action.";
                 break;
-            case HttpException.ConflictException:
-                statusCode = HttpStatusCode.Conflict;
+            case InternalServerErrorException:
+                statusCode = HttpStatusCode.InternalServerError;
+                message = exception.Message;
+                break;
+            case NotAcceptableException:
+                statusCode = HttpStatusCode.NotAcceptable;
+                message = exception.Message;
+                break;
+            case NotFoundException:
+                statusCode = HttpStatusCode.NotFound;
+                message = exception.Message;
+                break;
+            case NotImplementedErrorException:
+                statusCode = HttpStatusCode.NotImplemented;
+                message = exception.Message;
+                break;
+            case PreconditionFailedException:
+                statusCode = HttpStatusCode.PreconditionFailed;
+                message = exception.Message;
+                break;
+            case RequestTimeoutException:
+                statusCode = HttpStatusCode.RequestTimeout;
+                message = exception.Message;
+                break;
+            case ServiceUnavailableException:
+                statusCode = HttpStatusCode.ServiceUnavailable;
+                message = exception.Message;
+                break;
+            case UnauthorizedException:
+                statusCode = HttpStatusCode.Unauthorized;
+                message = "Access is denied for this resource.";
+                break;
+            case UnsupportedMediaTypeException:
+                statusCode = HttpStatusCode.UnsupportedMediaType;
                 message = exception.Message;
                 break;
         }

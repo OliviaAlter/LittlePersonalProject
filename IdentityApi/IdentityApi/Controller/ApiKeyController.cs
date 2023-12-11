@@ -37,12 +37,13 @@ public class ApiKeyController(IApiKeyService apiKeyService) : ControllerBase
         });
     }
 
-    [HttpPost("validate-api-key")]
+    [HttpPost("validate")]
     public async Task<IActionResult> ValidateApiKey([FromBody] string apiKey)
     {
         if (string.IsNullOrEmpty(apiKey)) return BadRequest("API key is required.");
 
         var isValid = await apiKeyService.IsApiKeyValidAsync(apiKey);
+
         return Ok(new
         {
             IsValid = isValid
