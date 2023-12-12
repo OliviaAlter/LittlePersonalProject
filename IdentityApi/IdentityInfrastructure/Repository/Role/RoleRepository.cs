@@ -36,7 +36,7 @@ public class RoleRepository(IAuthIdentityDbContext context, ILogger<RoleReposito
         }
     }
 
-    public async Task<Guid> GetOrCreateRoleAsync(UserRoleEnum rolesEnum)
+    public async Task<Guid> GetOrCreateRoleAsync(AccountRoleEnum rolesEnum)
     {
         var roleName = GetRoleNameAsync(rolesEnum);
 
@@ -71,7 +71,7 @@ public class RoleRepository(IAuthIdentityDbContext context, ILogger<RoleReposito
 
     private static List<AccountRole> GetRolesToCreate(IEnumerable<AccountRole> existingRoles)
     {
-        return Enum.GetNames(typeof(UserRoleEnum))
+        return Enum.GetNames(typeof(AccountRoleEnum))
             .Where(role => !existingRoles.Any(r => r.RoleName.Equals(role, StringComparison.OrdinalIgnoreCase)))
             .Select(role => new AccountRole { RoleId = Guid.NewGuid(), RoleName = role })
             .ToList();
@@ -87,14 +87,14 @@ public class RoleRepository(IAuthIdentityDbContext context, ILogger<RoleReposito
         return await context.Roles.ToListAsync();
     }
 
-    private static string GetRoleNameAsync(UserRoleEnum rolesEnum)
+    private static string GetRoleNameAsync(AccountRoleEnum rolesEnum)
     {
         var roleName = rolesEnum switch
         {
-            UserRoleEnum.Admin => nameof(UserRoleEnum.Admin),
-            UserRoleEnum.NormalUser => nameof(UserRoleEnum.NormalUser),
-            UserRoleEnum.Moderator => nameof(UserRoleEnum.Moderator),
-            UserRoleEnum.SuperAdmin => nameof(UserRoleEnum.SuperAdmin),
+            AccountRoleEnum.Admin => nameof(AccountRoleEnum.Admin),
+            AccountRoleEnum.NormalUser => nameof(AccountRoleEnum.NormalUser),
+            AccountRoleEnum.Moderator => nameof(AccountRoleEnum.Moderator),
+            AccountRoleEnum.SuperAdmin => nameof(AccountRoleEnum.SuperAdmin),
             _ => null
         };
 

@@ -54,8 +54,8 @@ public static class JwtTokenServiceExtension
 
             x.AddPolicy(AuthConstants.TrustedMemberPolicyName,
                 p => p.RequireAssertion(c =>
-                    c.User.HasClaim(m => m is { Type: AuthConstants.AdminUserClaimName, Value: "true" }) ||
-                    c.User.HasClaim(m => m is { Type: AuthConstants.TrustedMemberClaimName, Value: "true" })));
+                    c.Account.HasClaim(m => m is { Type: AuthConstants.AdminUserClaimName, Value: "true" }) ||
+                    c.Account.HasClaim(m => m is { Type: AuthConstants.TrustedMemberClaimName, Value: "true" })));
         });
         */
     }

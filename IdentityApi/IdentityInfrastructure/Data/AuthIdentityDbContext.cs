@@ -52,7 +52,7 @@ public class AuthIdentityDbContext : DbContext, IAuthIdentityDbContext
     }
 
 
-    public DbSet<Account> Users { get; set; }
+    public DbSet<Account> Accounts { get; set; }
     public DbSet<UserApiKey> UserApiKeys { get; set; }
     public DbSet<AccountRole> Roles { get; set; }
     public DbSet<AuditRecord> AuditRecords { get; set; }

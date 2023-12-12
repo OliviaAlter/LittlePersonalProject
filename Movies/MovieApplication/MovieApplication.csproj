@@ -7,17 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\MovieApi\MovieApi.csproj"/>
+        <ProjectReference Include="..\..\SharedCommon\Common.Exception\Common.Exception.csproj"/>
         <ProjectReference Include="..\MovieCore\MovieCore.csproj"/>
         <ProjectReference Include="..\MovieInfrastructure\MovieInfrastructure.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="ReturnModel\"/>
     </ItemGroup>
 
 </Project>

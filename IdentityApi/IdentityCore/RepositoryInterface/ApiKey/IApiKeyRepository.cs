@@ -1,4 +1,4 @@
-using IdentityCore.Model.ObjectResponse;
+using Common.Exception.ObjectResponse;
 
 namespace IdentityCore.RepositoryInterface.ApiKey;
 

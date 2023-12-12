@@ -4,16 +4,21 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>Application</RootNamespace>
+        <RootNamespace>MovieBookingApplication</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="ServiceInterface\"/>
         <Folder Include="Service\"/>
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Movies\MovieCore\MovieCore.csproj"/>
+        <ProjectReference Include="..\..\SharedCommon\Common.Exception\Common.Exception.csproj"/>
         <ProjectReference Include="..\MovieBookingCore\MovieBookingCore.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
     </ItemGroup>
 
 </Project>

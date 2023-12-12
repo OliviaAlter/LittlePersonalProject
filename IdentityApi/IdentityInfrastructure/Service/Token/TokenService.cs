@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using IdentityCore.Model.DatabaseEntity.AccountModel;
 using IdentityCore.Model.Token;
-using IdentityCore.RepositoryInterface.User;
+using IdentityCore.RepositoryInterface.Account;
 using IdentityCore.ServiceInterface.Token;
 using IdentityInfrastructure.Setting;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace IdentityInfrastructure.Service.Token;
 
 public class TokenService
-    (JwtSettings jwtSettings, IUserRepository repository) : ITokenService
+    (JwtSettings jwtSettings, IAccountRepository repository) : ITokenService
 {
     private const int TokenExpiryHours = 12;
 
@@ -52,24 +52,24 @@ public class TokenService
 
     public async Task<(string jwtToken, string refreshToken)> RefreshTokenForUser(TokenGeneration request)
     {
-        var user = await GetUserFromToken(request.Token);
+        var account = await GetUserFromToken(request.Token);
 
         // Validate the refresh token
-        if (!await IsRefreshTokenValid(request.RefreshToken, user.UserId))
+        if (!await IsRefreshTokenValid(request.RefreshToken, account.AccountId))
             throw new InvalidOperationException("Invalid refresh token.");
 
-        var claims = GenerateClaimsForUser(user);
+        var claims = GenerateClaimsForUser(account);
 
         var newJwtToken = CreateJwtToken(claims);
 
         var newRefreshToken = GenerateRefreshToken();
 
-        // Update the user with the new refresh token
-        user.RefreshToken = newRefreshToken;
+        // Update the account with the new refresh token
+        account.RefreshToken = newRefreshToken;
 
-        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7); // Set new expiry
+        account.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7); // Set new expiry
 
-        await repository.UpdatePartialAsync(user);
+        await repository.UpdatePartialAsync(account);
 
         return (newJwtToken, newRefreshToken); // Return the new JWT token
     }
@@ -78,12 +78,13 @@ public class TokenService
     {
         var localUserId = accountId;
 
-        var user = await repository.FindAsync(x => x.UserId == localUserId);
+        var account = await repository.FindAsync(x => x.AccountId == localUserId);
 
-        if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+        if (account is null || account.RefreshToken != refreshToken ||
+            account.RefreshTokenExpiryTime <= DateTime.UtcNow)
             throw new InvalidOperationException("Invalid client request");
 
-        return user.RefreshToken == refreshToken && user.RefreshTokenExpiryTime > DateTime.UtcNow;
+        return account.RefreshToken == refreshToken && account.RefreshTokenExpiryTime > DateTime.UtcNow;
     }
 
     public async Task<Guid> GetUserIdFromToken(string token)
@@ -105,12 +106,12 @@ public class TokenService
 
         var userToFind = accountId;
 
-        var user = await repository.FindAsync(x => x.UserId == userToFind);
+        var account = await repository.FindAsync(x => x.AccountId == userToFind);
 
-        if (user is null)
+        if (account is null)
             throw new InvalidOperationException("Invalid token");
 
-        return user;
+        return account;
     }
 
     private async Task<string> GetUserIdFromClaims(string token)
@@ -118,7 +119,7 @@ public class TokenService
         var principal = GetPrincipalFromToken(token);
 
         var userIdClaim = principal.Identities.FirstOrDefault()?
-            .Claims.FirstOrDefault(c => c.Type == "userid")?.Value;
+            .Claims.FirstOrDefault(c => c.Type == "AccountId")?.Value;
 
         if (userIdClaim is null)
             throw new ArgumentException("Invalid token");
@@ -204,7 +205,7 @@ public class TokenService
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new(JwtRegisteredClaimNames.Email, request.Email),
             new(JwtRegisteredClaimNames.Name, request.Username),
-            new("userid", request.UserId.ToString())
+            new("AccountId", request.AccountId.ToString())
         };
     }
 }

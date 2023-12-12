@@ -1,19 +1,19 @@
-using IdentityApplication.BusinessRule.User;
+using IdentityApplication.BusinessRule.Account;
+using IdentityApplication.Service.Account;
 using IdentityApplication.Service.ApiKey;
-using IdentityApplication.Service.User;
+using IdentityApplication.ServiceInterface.Account;
 using IdentityApplication.ServiceInterface.ApiKey;
-using IdentityApplication.ServiceInterface.User;
-using IdentityCore.BusinessRuleInterface.EndUser;
+using IdentityCore.BusinessRuleInterface.Account;
+using IdentityCore.RepositoryInterface.Account;
 using IdentityCore.RepositoryInterface.ApiKey;
 using IdentityCore.RepositoryInterface.Generic;
 using IdentityCore.RepositoryInterface.Role;
-using IdentityCore.RepositoryInterface.User;
 using IdentityCore.ServiceInterface.Audit;
 using IdentityCore.ServiceInterface.Password;
+using IdentityInfrastructure.Repository.Account;
 using IdentityInfrastructure.Repository.ApiKey;
 using IdentityInfrastructure.Repository.Generic;
 using IdentityInfrastructure.Repository.Role;
-using IdentityInfrastructure.Repository.User;
 using IdentityInfrastructure.Service.Audit;
 using IdentityInfrastructure.Service.HashingPassword;
 
@@ -25,7 +25,7 @@ public static class InjectServiceExtension
     {
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
-        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IAccountRepository, AccountRepository>();
 
         services.AddScoped<IRoleRepository, RoleRepository>();
 
@@ -33,12 +33,12 @@ public static class InjectServiceExtension
 
         services.AddScoped<IApiKeyService, ApiKeyService>();
 
-        services.AddScoped<IEndUserService, UserService>();
+        services.AddScoped<IAccountService, AccountService>();
 
         services.AddScoped<IAuditService, AuditService>();
 
         services.AddScoped<IPasswordHashingService, PasswordHashingService>();
 
-        services.AddScoped<IEndUserBusinessRuleService, EndUserBusinessRuleService>();
+        services.AddScoped<IAccountBusinessRuleService, AccountBusinessRuleService>();
     }
 }

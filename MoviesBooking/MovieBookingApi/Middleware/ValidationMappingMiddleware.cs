@@ -1,5 +1,5 @@
+using Common.Exception.Response.Validation;
 using FluentValidation;
-using MovieBookingApi.Response;
 
 namespace MovieBookingApi.Middleware;
 

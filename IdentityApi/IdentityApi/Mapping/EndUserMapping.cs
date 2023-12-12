@@ -1,11 +1,11 @@
-using Identity.Request.User;
+using Identity.Request.Account;
 using IdentityCore.ModelValidation.UserModel;
 
 namespace Identity.Mapping;
 
 public static class EndUserMapping
 {
-    public static UserRegistration MapToUser(this EndUserRegisterRequest request)
+    public static UserRegistration MapToUser(this AccountRegisterRequest request)
     {
         return new UserRegistration
         {

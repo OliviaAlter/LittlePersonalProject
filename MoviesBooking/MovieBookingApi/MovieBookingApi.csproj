@@ -23,13 +23,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Controller\"/>
-        <Folder Include="Request\"/>
-        <Folder Include="ServiceExtension\"/>
+        <ProjectReference Include="..\..\SharedCommon\Common.Exception\Common.Exception.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\SharedCommon\Common.Exception\Common.Exception.csproj"/>
+        <Folder Include="Response\"/>
     </ItemGroup>
 
 </Project>

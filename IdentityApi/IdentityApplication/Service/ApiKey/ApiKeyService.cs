@@ -1,5 +1,5 @@
+using Common.Exception.ObjectResponse;
 using IdentityApplication.ServiceInterface.ApiKey;
-using IdentityCore.Model.ObjectResponse;
 using IdentityCore.RepositoryInterface.ApiKey;
 
 namespace IdentityApplication.Service.ApiKey;

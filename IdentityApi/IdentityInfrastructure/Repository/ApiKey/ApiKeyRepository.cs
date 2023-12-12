@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
+using Common.Exception.ObjectResponse;
 using Common.Exception.RepositoryException.ApiKeyRepositoryException;
 using IdentityCore.Model.DatabaseEntity.ApiKeyModel;
-using IdentityCore.Model.ObjectResponse;
 using IdentityCore.RepositoryInterface.ApiKey;
 using IdentityInfrastructure.Data;
 using IdentityInfrastructure.Repository.Generic;
@@ -19,22 +19,22 @@ public class ApiKeyRepository
     public async Task<string> GetApiKeyAsync(Guid accountId)
     {
         if (accountId == Guid.Empty)
-            throw new ArgumentException("Invalid user ID.", nameof(accountId));
+            throw new ArgumentException("Invalid account ID.", nameof(accountId));
 
         var apiKey = await FindApiKeyBasedOnUserAsync(accountId);
 
         switch (apiKey)
         {
             case null:
-                logger.LogInformation("No API key found for user {UserId}", accountId);
+                logger.LogInformation("No API key found for account {AccountId}", accountId);
                 throw new ApiKeyNotFoundException("API key not found.");
 
             case { IsRevoked: true }:
-                logger.LogInformation("API key for user {UserId} is revoked", accountId);
+                logger.LogInformation("API key for account {AccountId} is revoked", accountId);
                 throw new ApiKeyRevokedException("API key is revoked.");
 
             case not null when apiKey.ExpiresAt < DateTime.UtcNow:
-                logger.LogInformation("API key for user {UserId} has expired", accountId);
+                logger.LogInformation("API key for account {AccountId} has expired", accountId);
                 throw new ApiKeyExpiredException("API key has expired.");
         }
 
@@ -44,7 +44,7 @@ public class ApiKeyRepository
     public async Task<string> CreateApiKeyAsync(Guid accountId)
     {
         if (accountId == Guid.Empty)
-            throw new ArgumentException("Invalid user ID.", nameof(accountId));
+            throw new ArgumentException("Invalid account ID.", nameof(accountId));
 
         await using var transaction = await context.BeginTransactionAsync();
         try
@@ -64,7 +64,7 @@ public class ApiKeyRepository
                 UpdateApiKey(newApiKey);
                 await context.SaveChangesAsync();
                 await transaction.CommitAsync();
-                logger.LogInformation("API key created for user {UserId}", accountId);
+                logger.LogInformation("API key created for account {AccountId}", accountId);
                 return newApiKey.UniqueApiKey;
             }
 
@@ -73,13 +73,13 @@ public class ApiKeyRepository
             await context.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            logger.LogInformation("API key updated for user {UserId}", accountId);
+            logger.LogInformation("API key updated for account {AccountId}", accountId);
             return existingApiKey.UniqueApiKey;
         }
         catch (Exception ex)
         {
             await transaction.RollbackAsync();
-            logger.LogError(ex, "Error occurred while creating API key for user {UserId}", accountId);
+            logger.LogError(ex, "Error occurred while creating API key for account {AccountId}", accountId);
             throw new ApiKeyGenerationException("Error while creating API key", ex);
         }
     }
@@ -88,7 +88,7 @@ public class ApiKeyRepository
     public async Task<bool> RevokeApiKeyAsync(Guid accountId)
     {
         if (accountId == Guid.Empty)
-            throw new ArgumentException("Invalid user ID.", nameof(accountId));
+            throw new ArgumentException("Invalid account ID.", nameof(accountId));
 
         try
         {
@@ -96,7 +96,7 @@ public class ApiKeyRepository
 
             if (apiKey is null)
             {
-                logger.LogInformation("No API key found for user {UserId} to revoke", accountId);
+                logger.LogInformation("No API key found for account {AccountId} to revoke", accountId);
                 return false;
             }
 
@@ -106,14 +106,26 @@ public class ApiKeyRepository
             context.UserApiKeys.Update(apiKey);
             await context.SaveChangesAsync();
 
-            logger.LogInformation("API key revoked for user {UserId}", accountId);
+            logger.LogInformation("API key revoked for account {AccountId}", accountId);
             return true;
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error occurred while revoking API key for user {UserId}", accountId);
+            logger.LogError(ex, "Error occurred while revoking API key for account {AccountId}", accountId);
             throw new ApiKeyValidationException("Error while revoking API key", ex);
         }
+    }
+
+    public async Task<bool> IsApiKeyValidAsync(string apiKeyId)
+    {
+        if (string.IsNullOrEmpty(apiKeyId))
+            throw new ArgumentException("API key must be provided.", nameof(apiKeyId));
+
+        return await context.UserApiKeys
+            .AnyAsync(x =>
+                x.UniqueApiKey == apiKeyId
+                && !x.IsRevoked
+                && x.ExpiresAt > DateTime.UtcNow);
     }
 
     public async Task<UserApiKeyResponse?> GetUserFromApiKeyAsync(string providedApiKey)
@@ -130,24 +142,12 @@ public class ApiKeyRepository
         if (apiKey is not null)
             return new UserApiKeyResponse
             {
-                AccountId = apiKey.Account.UserId,
+                AccountId = apiKey.Account.AccountId,
                 Email = apiKey.Account.Email,
                 Username = apiKey.Account.Username
             };
 
         return null;
-    }
-
-    public async Task<bool> IsApiKeyValidAsync(string apiKeyId)
-    {
-        if (string.IsNullOrEmpty(apiKeyId))
-            throw new ArgumentException("API key must be provided.", nameof(apiKeyId));
-
-        return await context.UserApiKeys
-            .AnyAsync(x =>
-                x.UniqueApiKey == apiKeyId
-                && !x.IsRevoked
-                && x.ExpiresAt > DateTime.UtcNow);
     }
 
     private async Task<UserApiKey?> FindApiKeyBasedOnUserAsync(Guid accountId)

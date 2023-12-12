@@ -1,13 +1,12 @@
 using System.Net;
 using System.Net.Http.Json;
 using Common.Exception.HttpException;
+using Common.Exception.ObjectResponse;
+using Common.Exception.Setting.Option.ApiKeyUrl;
 using Microsoft.Extensions.Logging;
-using MovieApplication.ReturnModel.UserApiKey;
 using MovieApplication.ServiceInterface.ApiKey;
 using MovieCore.ValidationResult.ApiKeyValidationResult;
-using MovieInfrastructure.Setting;
 using Newtonsoft.Json;
-using UnauthorizedAccessException = MovieApi.CustomException.UnauthorizedAccessException;
 
 namespace MovieApplication.Service.ApiKey;
 
@@ -18,7 +17,7 @@ public class ApiKeyService
     {
         try
         {
-            var response = await httpClient.PostAsJsonAsync("auth/validate-api-key", apiKey);
+            var response = await httpClient.PostAsJsonAsync($"{authUrl.ApiKeyUrl}/validate", apiKey);
 
             if (response.IsSuccessStatusCode)
             {
@@ -36,21 +35,15 @@ public class ApiKeyService
                 case HttpStatusCode.BadRequest:
                     logger.LogWarning("API key is invalid or missing");
                     throw new BadRequestException("API key is invalid or missing.");
+                case HttpStatusCode.Forbidden:
+                    logger.LogWarning("API key is valid but forbidden");
+                    throw new ForbiddenAccessException("API key is valid but forbidden.");
                 case HttpStatusCode.Unauthorized:
                     logger.LogWarning("API key is invalid thus unauthorized");
                     throw new UnauthorizedException("API key is invalid thus unauthorized.");
             }
 
-            if (response.StatusCode
-                is HttpStatusCode.BadRequest
-                or HttpStatusCode.Unauthorized
-                or HttpStatusCode.Forbidden)
-            {
-                logger.LogWarning("API key is invalid or missing");
-                throw new ArgumentException("API key is invalid or missing.");
-            }
-
-
+            logger.LogWarning("Unexpected response from the authentication service");
             throw new Exception("Unexpected response from the authentication service.");
         }
         catch (HttpRequestException ex)
@@ -59,12 +52,46 @@ public class ApiKeyService
         }
     }
 
-    public async Task<UserApiKey?> GetUserFromApiKeyAsync(string apiKey)
+    public async Task<UserApiKeyResponse?> GetUserFromApiKeyAsync(string providedApiKey)
     {
-        var response = await httpClient.GetAsync($"{authUrl}/user-details?apiKey={apiKey}");
-        if (response.IsSuccessStatusCode) return await response.Content.ReadAsAsync<UserApiKey>();
+        try
+        {
+            var response = await httpClient.GetAsync($"{authUrl.ApiKeyUrl}/account-details?apiKey={providedApiKey}");
 
-        // Handle errors or not found cases
-        return null;
+            if (!response.IsSuccessStatusCode)
+            {
+                logger.LogWarning("Authentication API responded with status code: {StatusCode}", response.StatusCode);
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.BadRequest:
+                        logger.LogWarning("API key is invalid or missing");
+                        throw new BadRequestException("API key is invalid or missing.");
+                    case HttpStatusCode.Forbidden:
+                        logger.LogWarning("API key is valid but forbidden");
+                        throw new ForbiddenAccessException("API key is valid but forbidden.");
+                    case HttpStatusCode.Unauthorized:
+                        logger.LogWarning("API key is invalid thus unauthorized");
+                        throw new UnauthorizedException("API key is invalid thus unauthorized.");
+                }
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<UserApiKeyResponse>(content);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "Error occurred while calling the authentication API");
+            throw;
+        }
+        catch (JsonException ex)
+        {
+            logger.LogError(ex, "Error occurred while deserializing the response from the authentication API");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An unexpected error occurred");
+            throw;
+        }
     }
 }

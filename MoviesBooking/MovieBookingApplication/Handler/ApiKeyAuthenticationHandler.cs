@@ -1,18 +1,20 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using Common.Exception.Setting.Option.ApiKey;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MovieBookingCore.Options.ApiKey;
+using MovieBookingApplication.ServiceInterface.ApiKey;
 
-namespace Application.Handler;
+namespace MovieBookingApplication.Handler;
 
 public class ApiKeyAuthenticationHandler(
         IOptionsMonitor<ApiKeyAuthenticationOptions> options,
         ILoggerFactory loggerFactory,
+        ISystemClock clock,
         UrlEncoder encoder,
         IApiKeyService apiKeyService)
-    : AuthenticationHandler<ApiKeyAuthenticationOptions>(options, loggerFactory, encoder)
+    : AuthenticationHandler<ApiKeyAuthenticationOptions>(options, loggerFactory, encoder, clock)
 {
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
@@ -28,35 +30,27 @@ public class ApiKeyAuthenticationHandler(
         if (apiKeyHeaderValues.Count == 0 || providedApiKey is null || string.IsNullOrWhiteSpace(providedApiKey))
             return AuthenticateResult.Fail("API Key is empty.");
 
-        try
+        var isValidApiKey = await apiKeyService.ValidateApiKeyAsync(providedApiKey);
+
+        if (!isValidApiKey) return AuthenticateResult.Fail("Invalid API Key provided.");
+
+        var account = await apiKeyService.GetUserFromApiKeyAsync(providedApiKey);
+
+        if (account is null)
+            return AuthenticateResult.Fail("No account associated with this API key.");
+
+        var claims = new[]
         {
-            var isValidApiKey = await apiKeyService.IsApiKeyValidAsync(providedApiKey);
+            new Claim(ClaimTypes.PrimarySid, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.Email, account.Email),
+            new Claim(ClaimTypes.Name, account.Username),
+            new Claim("AccountId", account.AccountId.ToString())
+        };
 
-            if (!isValidApiKey) return AuthenticateResult.Fail("Invalid API Key provided.");
+        var identity = new ClaimsIdentity(claims, Scheme.Name);
 
-            var user = await apiKeyService.GetUserFromApiKeyAsync(providedApiKey);
+        var ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name);
 
-            if (user is null)
-                return AuthenticateResult.Fail("No user associated with this API key.");
-
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.PrimarySid, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim("userid", user.AccountId.ToString())
-            };
-
-            var identity = new ClaimsIdentity(claims, Scheme.Name);
-
-            var ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name);
-
-            return AuthenticateResult.Success(ticket);
-        }
-        catch (Exception ex)
-        {
-            Logger.LogError(ex, "Exception occurred during API key validation");
-            return AuthenticateResult.Fail("An error occurred during API key validation.");
-        }
+        return AuthenticateResult.Success(ticket);
     }
 }

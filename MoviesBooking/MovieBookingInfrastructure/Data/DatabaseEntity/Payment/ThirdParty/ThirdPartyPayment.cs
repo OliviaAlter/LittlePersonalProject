@@ -1,4 +1,4 @@
-namespace Infrastructure.Data.DatabaseEntity.Payment.ThirdParty;
+namespace MovieBookingInfrastructure.Data.DatabaseEntity.Payment.ThirdParty;
 
 public class ThirdPartyPayment
 {

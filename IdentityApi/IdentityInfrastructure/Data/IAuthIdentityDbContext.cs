@@ -11,7 +11,7 @@ namespace IdentityInfrastructure.Data;
 public interface IAuthIdentityDbContext
 {
     // DbSet 
-    DbSet<Account> Users { get; set; }
+    DbSet<Account> Accounts { get; set; }
     DbSet<UserApiKey> UserApiKeys { get; set; }
     DbSet<AccountRole> Roles { get; set; }
     DbSet<AuditRecord> AuditRecords { get; set; }

@@ -8,7 +8,8 @@ using MovieCore.Options.ApiKey;
 
 namespace MovieApplication.Handler;
 
-public class ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeyAuthenticationOptions> options,
+public class ApiKeyAuthenticationHandler(
+        IOptionsMonitor<ApiKeyAuthenticationOptions> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
         ISystemClock clock,
@@ -33,17 +34,17 @@ public class ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeyAuthenticationOpt
 
         if (!isValidApiKey) return AuthenticateResult.Fail("Invalid API Key provided.");
 
-        var user = await apiKeyService.GetUserFromApiKeyAsync(providedApiKey);
+        var account = await apiKeyService.GetUserFromApiKeyAsync(providedApiKey);
 
-        if (user is null)
-            return AuthenticateResult.Fail("No user associated with this API key.");
+        if (account is null)
+            return AuthenticateResult.Fail("No account associated with this API key.");
 
         var claims = new[]
         {
             new Claim(ClaimTypes.PrimarySid, Guid.NewGuid().ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Name, user.Username),
-            new Claim("userid", user.AccountId.ToString())
+            new Claim(ClaimTypes.Email, account.Email),
+            new Claim(ClaimTypes.Name, account.Username),
+            new Claim("AccountId", account.AccountId.ToString())
         };
 
         var identity = new ClaimsIdentity(claims, Scheme.Name);

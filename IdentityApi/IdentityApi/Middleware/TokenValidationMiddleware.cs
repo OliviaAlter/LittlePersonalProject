@@ -4,7 +4,8 @@ namespace Identity.Middleware;
 
 public class TokenValidationMiddleware(RequestDelegate next)
 {
-    public async Task InvokeAsync(HttpContext context, ITokenService tokenService)
+    public async Task InvokeAsync(HttpContext context, ITokenService tokenService,
+        ILogger<TokenValidationMiddleware> logger)
     {
         var authHeader = context.Request.Headers["Authorization"];
 
@@ -14,7 +15,7 @@ public class TokenValidationMiddleware(RequestDelegate next)
 
             if (!string.IsNullOrEmpty(token))
             {
-                // Extract user information or token id from the token
+                // Extract account information or token id from the token
                 var accountId = await tokenService.GetUserIdFromToken(token);
 
                 if (accountId == Guid.Empty)

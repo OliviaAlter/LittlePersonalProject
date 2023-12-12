@@ -5,7 +5,7 @@ namespace IdentityCore.Model.DatabaseEntity.AccountModel;
 
 public class Account
 {
-    [Key] public Guid UserId { get; set; }
+    [Key] public Guid AccountId { get; set; }
 
     public required string Username { get; set; }
     public required string Email { get; set; }

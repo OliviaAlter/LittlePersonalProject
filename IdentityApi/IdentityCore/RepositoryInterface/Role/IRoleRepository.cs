@@ -7,5 +7,5 @@ namespace IdentityCore.RepositoryInterface.Role;
 public interface IRoleRepository : IGenericRepository<AccountRole>
 {
     Task InitializeRolesOnStartUp();
-    Task<Guid> GetOrCreateRoleAsync(UserRoleEnum rolesEnum);
+    Task<Guid> GetOrCreateRoleAsync(AccountRoleEnum rolesEnum);
 }

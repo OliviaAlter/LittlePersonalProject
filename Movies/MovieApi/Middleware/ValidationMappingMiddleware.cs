@@ -5,7 +5,7 @@ namespace MovieApi.Middleware;
 
 public class ValidationMappingMiddleware(RequestDelegate next)
 {
-    public async Task Invoke(HttpContext context)
+    public async Task InvokeAsync(HttpContext context)
     {
         try
         {

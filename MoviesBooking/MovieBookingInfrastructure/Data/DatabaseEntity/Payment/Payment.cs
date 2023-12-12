@@ -1,11 +1,11 @@
-using Infrastructure.Data.DatabaseEntity.Booking;
+using MovieBookingInfrastructure.Data.DatabaseEntity.Booking;
 
-namespace Infrastructure.Data.DatabaseEntity.Payment;
+namespace MovieBookingInfrastructure.Data.DatabaseEntity.Payment;
 
 public class Payment
 {
     public Guid PaymentId { get; init; }
-    public Guid UserId { get; init; }
+    public Guid AccountId { get; init; }
     public Guid MovieId { get; init; }
     public List<string> Seats { get; set; }
     public DateTime PaymentDate { get; set; }

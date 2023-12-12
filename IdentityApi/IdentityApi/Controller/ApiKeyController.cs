@@ -11,7 +11,7 @@ public class ApiKeyController(IApiKeyService apiKeyService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetApiKey()
     {
-        var accountId = GetUserId();
+        var accountId = GetAccountIdFromToken();
 
         var apiKey = await apiKeyService.GetApiKeyAsync(accountId.Value);
 
@@ -24,7 +24,7 @@ public class ApiKeyController(IApiKeyService apiKeyService) : ControllerBase
     [HttpPost("create")]
     public async Task<IActionResult> CreateApiKey()
     {
-        var accountId = GetUserId();
+        var accountId = GetAccountIdFromToken();
 
         var apiKey = await apiKeyService.CreateApiKeyAsync(accountId.Value);
 
@@ -53,7 +53,7 @@ public class ApiKeyController(IApiKeyService apiKeyService) : ControllerBase
     [HttpPost("revoke")]
     public async Task<IActionResult> RevokeApiKey()
     {
-        var accountId = GetUserId();
+        var accountId = GetAccountIdFromToken();
 
         var result = await apiKeyService.RevokeApiKeyAsync(accountId.Value);
 
@@ -63,12 +63,12 @@ public class ApiKeyController(IApiKeyService apiKeyService) : ControllerBase
         return Ok();
     }
 
-    private Guid? GetUserId()
+    private Guid? GetAccountIdFromToken()
     {
-        var accountId = HttpContext.GetUserId();
+        var accountId = HttpContext.GetAccountId();
 
         if (accountId is null)
-            throw new BadHttpRequestException("User not found.");
+            throw new BadHttpRequestException("Account not found.");
 
         return accountId;
     }
